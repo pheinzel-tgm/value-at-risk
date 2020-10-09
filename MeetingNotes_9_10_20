@@ -1,0 +1,6 @@
+VaR:
+ - Historisch
+
+Frontend:
+ - Drop down für Auswahl der Aktien
+ - Kein Start End für Date sondern Drop down für z.B. 6 Monate, 1 Jahr, 2 Jahre.
