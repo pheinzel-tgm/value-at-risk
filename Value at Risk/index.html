@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+  <head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Value-At-Risk</title>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous">
+  </script>
+  <script src="./stocks.js" crossorigin="anonymous"> </script> <!-- loads stocks -->
+  <link rel="shortcut icon" href="favicon.png" />
+  <!-- <link href="css/bootstrap.min.css" rel="Stylesheet" /> -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+      body {
+        font-family: Arial;
+        overflow: auto;
+        border: 0px solid #f00;
+        padding: 0.5% 0.5% 0.5% 0.5%;
+      }
+      
+      html {
+        overflow: auto;
+        border: 0px solid #f00;
+      }
+      
+      #wrapper {
+        margin: 0.2em auto;
+        width: 30%;
+        text-align: center;
+      }
+    </style>
+    
+    <script>
+    
+    function formatDate(UNIX_timestamp){
+      var a = new Date(UNIX_timestamp/1);
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var year = a.getFullYear();
+      var month = months[a.getMonth()];
+      var date = a.getDate();
+      var hour = a.getHours();
+      var min = a.getMinutes();
+      var sec = a.getSeconds();
+      var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+      return time;
+    }
+    
+    function updateTable( data )
+    {
+      var dates = [];
+
+      var symbols = [];
+      // build the index
+      for (var x in data["output"][0] ) {
+        symbols.push(x);
+      }
+      console.log(symbols);
+
+      for (var x in data["output"][0][symbols[0]]) {
+        dates.push(x);
+      }
+      
+      var output = '<p class="text-lg-center" style="text-align: center">Value at Risk 95%: <b id="var95">'+data["output"][2]['varactual'][0]+' Euro ('+data["output"][1]['var'][0]+'%)</b></p>';
+      output+='<p class="text-lg-center" style="text-align: center">Value at Risk 99%: <b id="var99">'+data["output"][2]['varactual'][1]+' Euro ('+data["output"][1]['var'][1]+'%)</b></p>';
+        output+='<table class="table"><tr><th>Date</th>';
+      for(i=0;i<symbols.length;i++)
+        output += "<td>Rendite</td>";
+      output+="</tr>"
+      
+      for(j=0;j<dates.length;j++)
+      {
+        output += "<tr>"
+        output += "<th>"+formatDate ( dates[j] ) +"</th>"
+        for(i=0;i<symbols.length;i++)
+          output += "<td>"+data["output"][0][symbols[i]][dates[j]]+"</td>";
+        output += "</tr>"
+      }
+      
+      output +="</table>"
+      
+      document.getElementById("output").innerHTML = output;
+    }
+    
+    function sendReq( )
+    {
+      $("#stocks");
+      //$("weights");
+      console.log( $("#investment"));
+      //$("date_end");
+      
+      // var date_start = document.getElementById("date_start")
+      // date_start = new Date(date_start.value)
+      // date_start = date_start.getUTCFullYear() +"-"+ (date_start.getUTCMonth()+1) +"-"+ date_start.getUTCDate()
+      
+      // var date_end = document.getElementById("date_end")
+      // console.log(date_end.value)
+      // date_end = new Date(date_end.value)
+      // date_end = date_end.getUTCFullYear() +"-"+ (date_end.getUTCMonth()+1) +"-"+ date_end.getUTCDate()
+      // console.log(date_end)
+  $.get( "http://127.0.0.1:5000/", { stocks: $("#stocks").val( ), investment: $("#investment").val( ) } )
+    .done(function( data ) {
+      console.log(data);
+      updateTable( JSON.parse(data) );
+    })
+    .fail(function() {
+    alert( "error" );
+  })
+    
+    }
+    $('document').ready(function(){ //create stock options. "stocks" is imported from stocks.js
+      for(i=0;i<stocks.length;i++)
+        $("#stocks").append( '<option id="'+stocks[i][0]+'" value="'+stocks[i][0]+'">'+stocks[i][1]+'</option>' )
+    });
+    
+    </script>
+  </head>
+  <body>
+  <div id="wrapper">
+      <p>
+      <b>Stocks:</b>
+      <select id="stocks" class="browser-default custom-select">
+      </select>
+      </p>
+      <p>
+        <b>Investment (in Euro):</b>
+        <input type="text" class="form-control" placeholder="5000" id="investment" required />
+      </p>
+      <input type="button" class="btn btn-primary" value="Calculate" onclick="javascript:sendReq( )"/>
+    </div>
+    
+    <div id="output">
+    </div>
+  </body>
+</html>
