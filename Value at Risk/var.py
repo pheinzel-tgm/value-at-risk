@@ -4,10 +4,11 @@ import yfinance as yf
 import numpy as np
 import datetime as dt
 from datetime import timedelta
+from dateutil.relativedelta import relativedelta
 import json
     
 class ValueAtRisk:
-  def __init__(self, tickers, initial_investment ):
+  def __init__(self, tickers, initial_investment, time):
     
     # Create our portfolio of equities
     self.tickers = tickers
@@ -19,9 +20,10 @@ class ValueAtRisk:
     self.initial_investment = initial_investment
     
     # self.timeframe = timeframe
+    self.time = int(time)
 
   def getVar95( self ):
-    data = pdr.get_data_yahoo(self.tickers, start=dt.date.today( ) - timedelta(days=30) , end=dt.date.today())['Close']
+    data = pdr.get_data_yahoo(self.tickers, start=dt.date.today( ) - relativedelta(months=+self.time) , end=dt.date.today())['Close']
     returns = data.pct_change()
 
     returns_sorted = returns.sort_values(by=returns.columns[0], ascending=True)
@@ -35,7 +37,7 @@ class ValueAtRisk:
     return var95.to_json()
 
   def getVar99( self ):
-    data = pdr.get_data_yahoo(self.tickers, start=dt.date.today( ) - timedelta(days=30), end=dt.date.today())['Close']
+    data = pdr.get_data_yahoo(self.tickers, start=dt.date.today( ) - relativedelta(months=+self.time), end=dt.date.today())['Close']
     returns = data.pct_change()
 
     returns_sorted = returns.sort_values(by=returns.columns[0], ascending=True)
@@ -50,7 +52,7 @@ class ValueAtRisk:
 
   def getResult( self, json=None ):
     print("- * -")
-    data = pdr.get_data_yahoo(self.tickers, start=dt.date.today( ) - timedelta(days=30), end=dt.date.today())['Close']
+    data = pdr.get_data_yahoo(self.tickers, start=dt.date.today( ) - relativedelta(months=+self.time), end=dt.date.today())['Close']
     returns = data.pct_change()
 
     returns_sorted = returns.sort_values(by=returns.columns[0], ascending=True)

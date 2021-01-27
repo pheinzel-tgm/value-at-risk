@@ -32,7 +32,7 @@
     <script>
     
     
-    var portfolio = { "stock": [ { "name": "", "investment": 0, "weight": 1 } ] };//{ "stock": [ { "name": "a", "investment": 0, "weight": 0.12 }, { "name": "b", "investment": 0, "weight": 0.13 } ] };
+    var portfolio = { "stock": [ { "name": "", "investment": 0, "weight": 1, "timeInMonths": 1 } ] };//{ "stock": [ { "name": "a", "investment": 0, "weight": 0.12 }, { "name": "b", "investment": 0, "weight": 0.13 } ] };
     var curr_stock = 0;
 
     var curr_val_95 = [ 0, 0 ];
@@ -96,6 +96,7 @@
       portfolio["stock"][id]["name"]       = document.getElementById("stocks").value;
       portfolio["stock"][id]["investment"] = document.getElementById("investment").value;
       portfolio["stock"][id]["weight"]     = document.getElementById("weight").value;
+	  portfolio["stock"][id]["timeInMonths"]     = document.getElementById("timeInMonths").value;
     }
     
     function nextStock( )
@@ -136,6 +137,7 @@
       document.getElementById("stocks").value  =  obj["name"];
       document.getElementById("investment").value  =  obj["investment"];
       document.getElementById("weight").value  = obj["weight"];
+	  document.getElementById("timeInMonths").value  = obj["timeInMonths"];
       
       document.getElementById("stock_nr").innerHTML = (id+1);
     }
@@ -189,18 +191,18 @@
       {
       if( portfolio["stock"][i]["name"].length > 1 && portfolio["stock"][i]["investment"] > 0 && portfolio["stock"][i]["weight"] > 0.0 )
         {
-          sendReq( portfolio["stock"][i]["name"],portfolio["stock"][i]["investment"],portfolio["stock"][i]["weight"]);
+          sendReq( portfolio["stock"][i]["name"], portfolio["stock"][i]["investment"], portfolio["stock"][i]["weight"], portfolio["stock"][i]["timeInMonths"]);
         }
       }
     }
     
-    function sendReq( s_name, s_val, s_weight )
+    function sendReq( s_name, s_val, s_weight, s_time )
     {
 		  $("#stocks");
 
 		  console.log( $("#investment"));
 
-	  $.get( "http://127.0.0.1:5000/", { stocks: s_name, investment: s_val } )
+	  $.get( "http://127.0.0.1:5000/", { stocks: s_name, investment: s_val, timeInMonths: s_time } )
 		.done(function( data ) {
 		  console.log(data);
 		  updateTable( JSON.parse(data), s_weight );
@@ -245,6 +247,8 @@
         <input type="text" class="form-control" placeholder="0" id="investment" required />
         <b>Weighting:</b>
         <input type="text" class="form-control" placeholder="0.0" id="weight" required />
+		<b>Time in Months:</b>
+        <input type="number" class="form-control" placeholder="0.0" id="timeInMonths" required />
       </p>
       <p>
       <input type="button" class="btn btn-primary" value="Calculate" onclick="javascript:calcAll( )"/>

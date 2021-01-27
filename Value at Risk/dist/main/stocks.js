@@ -6,5 +6,4 @@ var stocks = [
 ["SNOW", "Snowflake Inc. (SNOW)"],
 ["SPOT", "Spotify Technology S.A. (SPOT)"],
 ["ZM", "Zoom Video Communications, Inc. (ZM)"],
-["TEST", "TEST ADD"],
 ]

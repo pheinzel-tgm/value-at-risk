@@ -15,7 +15,7 @@ def index():
     #weights = request.args.get('weights')
     #print( request.args.get('investment') )
     investment = request.args.get('investment')
-    # timeframe = request.args.get('timeframe')
+    timeframe = request.args.get('timeInMonths')
     
     stocks = stocks.replace(" ","")
     stocks = stocks.split(",")
@@ -29,15 +29,17 @@ def index():
     print("INV: "+str(investment))
     investment = int(investment)
       
-    # timeframe = timeframe.replace(" ","")
-    # timeframe = timeframe.split(",")
+    timeframe = timeframe.replace(" ","")
+    timeframe = timeframe.replace("[","")
+    timeframe = timeframe.replace("]","")
+    timeframe = timeframe.replace("'","")
     
     print("Stocks: "+str(stocks))
     #print("weights: "+str(weights))
     print("investment: "+str(investment))
-    # print("timeframe: "+str(timeframe))
+    print("timeframe: "+str(timeframe))
     
-    var = ValueAtRisk( stocks, investment )
+    var = ValueAtRisk( stocks, investment, timeframe )
     resp = Response("{\"errorcode\": 0, \"output\":["+var.getResult(True)+"]}")
     resp.headers['Access-Control-Allow-Origin'] = '*'
     return resp
