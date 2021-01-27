@@ -1,7 +1,6 @@
 from flask import Flask
 from flask import request
-from flask import Response
-import webview
+from flask import Response, redirect
 from var import ValueAtRisk
 import os
 import threading
@@ -58,18 +57,36 @@ def showStocks():
   resp = Response(txt)
   resp.headers['content-type'] = 'application/javascript'
   return txt
+  
+@app.route('/addStock', methods=['GET'])
+def addStocks():
+    with open('./stocks.js','r') as f:
+        lines = f.readlines()
+
+    with open('./stocks.js','w') as f:
+       new_value = 'Something New'
+       for line in lines:
+           if line.startswith(']'):
+               line = line.replace(']', '[' + request.args.get('stock') + '],')
+           f.write(line)
+
+    with open("./stocks.js","a") as f:
+        f.write("\n]")
+    
+    return redirect("http://127.0.0.1:5000", code=200)
 
 def start_server():
-    app.run(host='0.0.0.0', port=5000)
+    print("Hello World!")
+    app.run(host='127.0.0.1', port=5000)
     
 
-t = threading.Thread(target=start_server)
-t.daemon = True
-t.start()
+#t = threading.Thread(target=start_server)
+#t.daemon = True
+#t.start()
+  
+def main():
+    start_server()
 
-try:
-  webview.create_window('Value at Risk', 'index.html')
-  webview.start(debug=True)
-except:
-  sys.exit()
+if __name__ == "__main__":
+    main()
 

@@ -3,6 +3,7 @@ from pandas_datareader import data as pdr
 import yfinance as yf
 import numpy as np
 import datetime as dt
+from datetime import timedelta
 import json
     
 class ValueAtRisk:
@@ -20,7 +21,7 @@ class ValueAtRisk:
     # self.timeframe = timeframe
 
   def getVar95( self ):
-    data = pdr.get_data_yahoo(self.tickers, start="2019-01-01", end=dt.date.today())['Close']
+    data = pdr.get_data_yahoo(self.tickers, start=dt.date.today( ) - timedelta(days=30) , end=dt.date.today())['Close']
     returns = data.pct_change()
 
     returns_sorted = returns.sort_values(by=returns.columns[0], ascending=True)
@@ -34,7 +35,7 @@ class ValueAtRisk:
     return var95.to_json()
 
   def getVar99( self ):
-    data = pdr.get_data_yahoo(self.tickers, start="2019-01-01", end=dt.date.today())['Close']
+    data = pdr.get_data_yahoo(self.tickers, start=dt.date.today( ) - timedelta(days=30), end=dt.date.today())['Close']
     returns = data.pct_change()
 
     returns_sorted = returns.sort_values(by=returns.columns[0], ascending=True)
@@ -49,7 +50,7 @@ class ValueAtRisk:
 
   def getResult( self, json=None ):
     print("- * -")
-    data = pdr.get_data_yahoo(self.tickers, start="2019-01-01", end=dt.date.today())['Close']
+    data = pdr.get_data_yahoo(self.tickers, start=dt.date.today( ) - timedelta(days=30), end=dt.date.today())['Close']
     returns = data.pct_change()
 
     returns_sorted = returns.sort_values(by=returns.columns[0], ascending=True)
