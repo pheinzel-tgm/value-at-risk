@@ -5,7 +5,7 @@ from var import ValueAtRisk
 import os
 import threading
 import sys
-
+import datetime
 
 app = Flask(__name__)
 
@@ -75,8 +75,29 @@ def addStocks():
     
     return redirect("http://127.0.0.1:5000", code=200)
 
+@app.route('/save', methods=['POST'])
+def save():
+    ts = datetime.datetime.now().timestamp()
+    ts = datetime.datetime.fromtimestamp(ts).isoformat()
+    
+    ts = ts.replace(":", "-")
+    
+    filename = './Portfolios/' + ts + '-portfolio.json'
+    
+    print (request.get_data())
+    
+    data = str(request.get_data())
+    data = data.replace("'", "")
+    data = data[1:]
+    
+    print (data)
+    
+    with open(filename,'w') as f:
+        f.write(data)
+        
+    return redirect("http://127.0.0.1:5000", code=200)
+
 def start_server():
-    print("Hello World!")
     app.run(host='127.0.0.1', port=5000)
     
 

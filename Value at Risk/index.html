@@ -54,7 +54,21 @@
     {
       saveCurrentStock( );
       copyToClipboard( portfolio );
+	  
+	  saveCall();
     }
+	
+	function saveCall(){
+		console.log(JSON.stringify(portfolio));
+		
+		$.post( "http://127.0.0.1:5000/save", JSON.stringify(portfolio))
+		.done(function( data ) {
+			console.log(data);
+		})
+		.fail(function() {
+			alert( "error" );
+		})
+	}
     
     function copyToClipboard( copyText ) {
       el = document.getElementById('new_portfolio');
@@ -197,8 +211,6 @@
 	}
 	
 	function addStock( ) {
-		$("#stocks");
-		  console.log( $("#investment"));
 		$.get( "http://127.0.0.1:5000/addStock", { stock: $("#addStock").val( ) } )
 		.done(function( data ) {
 			console.log(data);
@@ -208,7 +220,6 @@
 			alert( "error" );
 		})
     }
-  
     
     $('document').ready(function(){ //create stock options. "stocks" is imported from stocks.js
       for(i=0;i<stocks.length;i++)
