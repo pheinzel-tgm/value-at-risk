@@ -32,15 +32,14 @@
     <script>
     
     
-    var portfolio = { "stock": [ { "name": "", "investment": 0, "weight": 1, "timeInMonths": 1 } ] };//{ "stock": [ { "name": "a", "investment": 0, "weight": 0.12 }, { "name": "b", "investment": 0, "weight": 0.13 } ] };
+    var portfolio = { "stock": [ { "name": "", "investment": 0, "weight": 1, "timeInMonths": 1 } ] };
     var curr_stock = 0;
 
     var curr_val_95 = [ 0, 0 ];
     var curr_val_99 = [ 0, 0 ];
     
     //loadPortfolio( portfolio );
-    function loadPortfolio( )
-    {
+    function loadPortfolio( ) {
       arr = document.getElementById('new_portfolio').value;
       if(arr != null)
       {
@@ -50,43 +49,26 @@
       }
     }
     
-    function savePortfolio( )
-    {
-      saveCurrentStock( );
-      copyToClipboard( portfolio );
-	  
+    function savePortfolio( ) {
+      saveCurrentStock();
 	  saveCall();
     }
 	
 	function saveCall(){
-		console.log(JSON.stringify(portfolio));
+		var portWithCalc = portfolio;
+		portWithCalc["var95"] = Math.round(curr_val_95[0]*1000)/1000 + ' Euro (' + Math.round(curr_val_95[1]*1000)/1000 + '%)';
+		portWithCalc["var99"] = Math.round(curr_val_99[0]*1000)/1000 + ' Euro (' + Math.round(curr_val_99[1]*1000)/1000 + '%)';
 		
-		$.post( "http://127.0.0.1:5000/save", JSON.stringify(portfolio))
+		console.log(JSON.stringify(portWithCalc));
+		
+		$.post( "http://127.0.0.1:5000/save", JSON.stringify(portWithCalc))
 		.done(function( data ) {
-			console.log(data);
+			alert("Portfolio Saved!");
 		})
 		.fail(function() {
 			alert( "error" );
 		})
 	}
-    
-    function copyToClipboard( copyText ) {
-      el = document.getElementById('new_portfolio');
-      el.value = JSON.stringify(copyText);
-      //document.body.appendChild(el);
-      /* Select the text field */
-      el.select();
-      el.setSelectionRange(0, 99999); /* For mobile devices */
-
-      /* Copy the text inside the text field */
-      document.execCommand("copy");
-
-      
-      //document.body.removeChild(el);
-      /* Alert the copied text */
-      alert("Portfolio copied to clipboard");
-      
-    }
     
     function saveCurrentStock( )
     {
@@ -164,7 +146,6 @@
       for (var x in data["output"][0] ) {
         symbols.push(x);
       }
-      console.log(symbols);
 
       for (var x in data["output"][0][symbols[0]]) {
         dates.push(x);
@@ -182,9 +163,8 @@
       document.getElementById("output").innerHTML = output;
     }
     
-    function calcAll( )
-    {
-      saveCurrentStock( );
+    function calcAll() {
+      saveCurrentStock();
       curr_val_95 = [ 0, 0 ];
       curr_val_99 = [ 0, 0 ];
       for(i=0;i<portfolio["stock"].length;i++)
@@ -196,15 +176,13 @@
       }
     }
     
-    function sendReq( s_name, s_val, s_weight, s_time )
-    {
+    function sendReq( s_name, s_val, s_weight, s_time ) {
 		  $("#stocks");
 
 		  console.log( $("#investment"));
 
 	  $.get( "http://127.0.0.1:5000/", { stocks: s_name, investment: s_val, timeInMonths: s_time } )
 		.done(function( data ) {
-		  console.log(data);
 		  updateTable( JSON.parse(data), s_weight );
 		})
 		.fail(function() {
@@ -215,7 +193,6 @@
 	function addStock( ) {
 		$.get( "http://127.0.0.1:5000/addStock", { stock: $("#addStock").val( ) } )
 		.done(function( data ) {
-			console.log(data);
 			location.reload();
 		})
 		.fail(function() {

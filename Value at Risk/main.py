@@ -6,6 +6,7 @@ import os
 import threading
 import sys
 import datetime
+import json
 
 app = Flask(__name__)
 
@@ -84,17 +85,38 @@ def save():
     
     ts = ts.replace(":", "-")
     
-    filename = './Portfolios/' + ts + '-portfolio.json'
-    
-    print (request.get_data())
+    filename = './Portfolios/' + ts + '-portfolio'
     
     data = str(request.get_data())
     data = data.replace("'", "")
     data = data[1:]
+    data = json.loads(data)
     
-    print (data)
+    dataHTML = '<html><head><style>h1 {text-align: center; color: lightblue;} h2 {text-align: center; color: #1dc3f5;} h3 {margin-left: 25%; color: #1dc3f5;} h4 {margin-left: 25%; color: lightblue;} p {margin-left: 25%;} #first {display: inline-block; width: 15%;}</style></head><body style="font-family: sans-serif">'
+
+    dataHTML += "<h1>Portfolio: </h1>"
     
-    with open(filename,'w') as f:
+    count = 1
+    for stock in data["stock"]:
+        dataHTML += '<div id="first">'
+        dataHTML += "<h3>Stock " + str(count) + ": </h3>"
+        dataHTML += "<h4>Name: </h4> <p>" + stock['name'] + "</p>"
+        dataHTML += "<h4>Investment: </h4> <p>" + stock['investment'] + "</p>"
+        dataHTML += "<h4>Weight: </h4> <p>" + stock['weight'] + "</p>"
+        dataHTML += "<h4>Time in Months: </h4> <p>" + stock['timeInMonths'] + "</p>"
+        dataHTML += "<br>"
+        dataHTML += "</div>"
+        count += 1
+
+    dataHTML += "<h2> Value at Risk 95%: " + data["var95"] + "</h2>"
+    dataHTML += "<h2> Value at Risk 99%: " + data["var99"] + "</h2>"
+
+    dataHTML += "</body></html>"
+    
+    with open(filename + '.html','w') as f:
+        f.write(dataHTML)
+        
+    with open(filename + '.json','w') as f:
         f.write(data)
         
     return redirect("http://127.0.0.1:5000", code=200)
@@ -112,4 +134,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
