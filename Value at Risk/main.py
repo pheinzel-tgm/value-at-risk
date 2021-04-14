@@ -117,7 +117,7 @@ def save():
         f.write(dataHTML)
         
     with open(filename + '.json','w') as f:
-        f.write(data)
+        f.write(str(data))
         
     return redirect("http://127.0.0.1:5000", code=200)
 
