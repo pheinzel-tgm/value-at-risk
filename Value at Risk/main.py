@@ -92,7 +92,10 @@ def save():
     data = data[1:]
     data = json.loads(data)
     
-    dataHTML = '<html><head>'
+    dataHTML = '<!--\n'
+    dataHTML += str(data) + '\n'
+    dataHTML += '-->\n'
+    dataHTML += '<html><head>'
     dataHTML += '<style>h1 {text-align: center; color: lightblue;} h2 {text-align: center; color: #1dc3f5;} h3 {margin-left: 25%; color: #1dc3f5;} h4 {margin-left: 25%; color: lightblue;} p {margin-left: 25%;} #first {display: inline-block; width: 15%;}</style>'
     dataHTML += '<script>var json = ' + str(data) + '; </script>'
     dataHTML += '</head><body style="font-family: sans-serif">'

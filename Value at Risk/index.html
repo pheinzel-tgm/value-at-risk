@@ -39,14 +39,31 @@
     var curr_val_99 = [ 0, 0 ];
     
     //loadPortfolio( portfolio );
-    function loadPortfolio( ) {
-      arr = document.getElementById('new_portfolio').value;
-      if(arr != null)
-      {
-        portfolio = JSON.parse( arr );
-        gotoStock( 0 );
-		calcAll();
-      }
+    function loadPortfolio(evt) {
+      var file = evt.target.files[0];
+	  
+	  if (file) {
+        var fr = new FileReader();
+		
+		fr.onload = function (e) {
+			var content = e.target.result;
+			content = content.replace(/'/g, '"');
+			
+			var lines = content.split(/\r?\n/);
+			
+			console.log(lines[1]);
+			
+			if(lines[1] != null) {
+				portfolio = JSON.parse(lines[1]);
+				gotoStock(0);
+				calcAll();
+			}
+		}
+		
+		fr.readAsText(file);
+	  } else {
+		alert("Failed to load file");
+	  }
     }
     
     function savePortfolio( ) {
@@ -204,7 +221,7 @@
       for(i=0;i<stocks.length;i++)
         $("#stocks").append( '<option id="'+stocks[i][0]+'" value="'+stocks[i][0]+'">'+stocks[i][1]+'</option>' )
     });
-    
+	
     </script>
   </head>
   <body>
@@ -233,9 +250,10 @@
       <input type="button" class="btn btn-warning" value=">" onclick="javascript:nextStock( )"/>
       </p>
       <p>
-      <input type="text" class="form-control" id="new_portfolio" placeholder="Insert portfolio" />
+      <label for="portfolio">Select a portfolio:</label>
+	  <input type="file" id="portfolio" name="portfolio" accept=".html"><br><br>
+	  <script> 	document.getElementById('portfolio').addEventListener('change', loadPortfolio, false); </script>
       <input type="button" class="btn btn-success" value="Save Portfolio" onclick="javascript:savePortfolio( )"/>
-      <input type="button" class="btn btn-success" value="Load Portfolio" onclick="javascript:loadPortfolio( )"/>
       </p>
     </div>
     

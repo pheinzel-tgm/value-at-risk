@@ -1,0 +1,1 @@
+{'stock': [{'name': 'NDAQ', 'investment': '10000', 'weight': '10', 'timeInMonths': '9'}, {'name': 'AAPL', 'investment': '1000000', 'weight': '4', 'timeInMonths': '8'}, {'name': 'ZM', 'investment': '5000', 'weight': '7', 'timeInMonths': '12'}], 'var95': '140481.52 Euro (84.34%)', 'var99': '230875.43 Euro (125.29%)'}
