@@ -1,2 +1,5 @@
 # value-at-risk
-FHTW InnoLab Value-at-Risk Berechnung für Aktien
+Value-at-Risk Berechnung für Aktien
+
+Frontend: HTML/JS
+Backend: Python Flask
